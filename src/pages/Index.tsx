@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import { Camera, MessageSquare, Map, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import CameraView from '@/components/CameraView';
 import WaterSafety from '@/components/WaterSafety';
 
 const Index = () => {
   const [showCamera, setShowCamera] = useState(false);
-  const [currentCountry, setCurrentCountry] = useState("Japan"); // Example country
+  const [currentCountry, setCurrentCountry] = useState("Japan");
 
   return (
-    <div className="min-h-screen bg-muted">
+    <div className="min-h-screen flex flex-col bg-muted">
+      <Header />
+      
       {showCamera ? (
         <CameraView onClose={() => setShowCamera(false)} />
       ) : (
-        <div className="container py-6 space-y-6">
-          <header className="flex items-center justify-between">
+        <main className="flex-grow container py-6 space-y-6">
+          <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-primary">XMRT Traveler</h1>
+              <h2 className="text-2xl font-bold text-primary">Welcome to XMRT Traveler</h2>
               <p className="text-sm text-gray-600">Your AI Travel Companion</p>
             </div>
             <Button
@@ -27,9 +31,9 @@ const Index = () => {
               <Globe className="h-4 w-4" />
               {currentCountry}
             </Button>
-          </header>
+          </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Button
               className="h-32 flex flex-col gap-2 bg-primary hover:bg-primary/90"
               onClick={() => setShowCamera(true)}
@@ -52,8 +56,10 @@ const Index = () => {
           </div>
 
           <WaterSafety country={currentCountry} />
-        </div>
+        </main>
       )}
+      
+      <Footer />
     </div>
   );
 };
