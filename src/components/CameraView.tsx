@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Camera, X } from 'lucide-react';
+import { Camera, X, FlipHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/use-toast';
 
 interface CameraViewProps {
   onClose: () => void;
@@ -9,22 +10,38 @@ interface CameraViewProps {
 const CameraView: React.FC<CameraViewProps> = ({ onClose }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
+
+  const startCamera = async () => {
+    try {
+      if (videoRef.current?.srcObject) {
+        const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
+        tracks.forEach(track => track.stop());
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode } 
+      });
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        setIsStreaming(true);
+      }
+    } catch (err) {
+      console.error("Error accessing camera:", err);
+      toast({
+        title: "Camera Error",
+        description: "Unable to access camera. Please check permissions.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const toggleCamera = () => {
+    setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
+  };
 
   useEffect(() => {
-    const startCamera = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: 'environment' } 
-        });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          setIsStreaming(true);
-        }
-      } catch (err) {
-        console.error("Error accessing camera:", err);
-      }
-    };
-
     startCamera();
 
     return () => {
@@ -33,7 +50,7 @@ const CameraView: React.FC<CameraViewProps> = ({ onClose }) => {
         tracks.forEach(track => track.stop());
       }
     };
-  }, []);
+  }, [facingMode]);
 
   return (
     <div className="fixed inset-0 bg-black z-50">
@@ -52,6 +69,14 @@ const CameraView: React.FC<CameraViewProps> = ({ onClose }) => {
             onClick={onClose}
           >
             <X className="h-6 w-6" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white"
+            onClick={toggleCamera}
+          >
+            <FlipHorizontal className="h-6 w-6" />
           </Button>
         </div>
         {isStreaming && (
