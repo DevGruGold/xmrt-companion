@@ -1,16 +1,19 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Camera, X, FlipHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
+import LanguageSelector from './LanguageSelector';
 
 interface CameraViewProps {
   onClose: () => void;
+  userLanguage: string;
 }
 
-const CameraView: React.FC<CameraViewProps> = ({ onClose }) => {
+const CameraView: React.FC<CameraViewProps> = ({ onClose, userLanguage }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
+  const [selectedLanguage, setSelectedLanguage] = useState(userLanguage);
 
   const startCamera = async () => {
     try {
@@ -70,6 +73,10 @@ const CameraView: React.FC<CameraViewProps> = ({ onClose }) => {
           >
             <X className="h-6 w-6" />
           </Button>
+          <LanguageSelector
+            selectedLanguage={selectedLanguage}
+            onLanguageChange={setSelectedLanguage}
+          />
           <Button
             variant="ghost"
             size="icon"
@@ -82,7 +89,7 @@ const CameraView: React.FC<CameraViewProps> = ({ onClose }) => {
         {isStreaming && (
           <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent">
             <div className="text-white text-sm">
-              Point camera at signs or landmarks for real-time information
+              Point camera at signs or landmarks for real-time translation
             </div>
           </div>
         )}

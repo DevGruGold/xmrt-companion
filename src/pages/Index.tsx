@@ -5,17 +5,31 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CameraView from '@/components/CameraView';
 import WaterSafety from '@/components/WaterSafety';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [showCamera, setShowCamera] = useState(false);
   const [currentCountry, setCurrentCountry] = useState("Japan");
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
+  const { toast } = useToast();
+
+  const handleLanguageChange = (language: string) => {
+    setSelectedLanguage(language);
+    toast({
+      title: "Language Updated",
+      description: "Your preferred language has been updated.",
+    });
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-muted">
       <Header />
       
       {showCamera ? (
-        <CameraView onClose={() => setShowCamera(false)} />
+        <CameraView 
+          onClose={() => setShowCamera(false)} 
+          userLanguage={selectedLanguage}
+        />
       ) : (
         <main className="flex-grow container py-6 space-y-6">
           <div className="flex items-center justify-between">
