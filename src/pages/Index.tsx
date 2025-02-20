@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import CameraView from '@/components/CameraView';
 import WaterSafety from '@/components/WaterSafety';
 import { useToast } from '@/hooks/use-toast';
+import { analyzeItinerary, generateTravelPlan, TravelSuggestions } from '@/services/travelPlannerService';
 import {
   Dialog,
   DialogContent,
@@ -20,6 +21,8 @@ const Index = () => {
   const [showCamera, setShowCamera] = useState(false);
   const [currentCountry, setCurrentCountry] = useState("Loading...");
   const [selectedLanguage, setSelectedLanguage] = useState("en");
+  const [aiAnalysis, setAiAnalysis] = useState<string>("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { toast } = useToast();
 
   const detectLocation = async () => {
@@ -54,16 +57,45 @@ const Index = () => {
     if (!file) return;
 
     try {
-      // Here you would implement the actual file parsing logic
-      // For now, we'll just show a success message
+      setIsAnalyzing(true);
+      const text = await file.text();
+      const analysis = await analyzeItinerary(text);
+      setAiAnalysis(analysis);
+      
       toast({
-        title: "Itinerary Imported",
-        description: "Your travel itinerary has been successfully imported.",
+        title: "Itinerary Analyzed",
+        description: "Your travel itinerary has been analyzed by AI. Check the suggestions below.",
       });
     } catch (error) {
+      console.error('Import error:', error);
       toast({
         title: "Import Error",
-        description: "Failed to import itinerary. Please try again.",
+        description: "Failed to analyze itinerary. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleTravelAssistant = async () => {
+    try {
+      const suggestions = await generateTravelPlan(
+        currentCountry,
+        "5 days", // You could make this configurable
+        ["sightseeing", "local food", "culture"] // You could make this configurable
+      );
+
+      setAiAnalysis(JSON.stringify(suggestions, null, 2));
+      toast({
+        title: "Travel Plan Generated",
+        description: "Your AI travel plan is ready. Check the suggestions below.",
+      });
+    } catch (error) {
+      console.error('Travel planning error:', error);
+      toast({
+        title: "Planning Error",
+        description: "Failed to generate travel plan. Please try again.",
         variant: "destructive",
       });
     }
@@ -72,14 +104,6 @@ const Index = () => {
   useEffect(() => {
     detectLocation();
   }, []);
-
-  const handleLanguageChange = (language: string) => {
-    setSelectedLanguage(language);
-    toast({
-      title: "Language Updated",
-      description: "Your preferred language has been updated.",
-    });
-  };
 
   return (
     <div className="min-h-screen flex flex-col bg-muted">
@@ -105,7 +129,7 @@ const Index = () => {
                     Import Itinerary
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="max-w-4xl">
                   <DialogHeader>
                     <DialogTitle>Import Travel Itinerary</DialogTitle>
                     <DialogDescription>
@@ -123,11 +147,23 @@ const Index = () => {
                         accept=".csv,.json,.txt"
                         onChange={handleFileUpload}
                         className="cursor-pointer rounded-lg border border-gray-200 px-3 py-2 text-sm"
+                        disabled={isAnalyzing}
                       />
                     </div>
                     <p className="text-xs text-muted-foreground">
                       Supported formats: CSV, JSON, TXT
                     </p>
+                    {isAnalyzing && (
+                      <p className="text-sm text-muted-foreground animate-pulse">
+                        Analyzing your itinerary...
+                      </p>
+                    )}
+                    {aiAnalysis && (
+                      <div className="mt-4 p-4 bg-muted rounded-lg">
+                        <h3 className="font-medium mb-2">AI Analysis & Suggestions</h3>
+                        <pre className="whitespace-pre-wrap text-sm">{aiAnalysis}</pre>
+                      </div>
+                    )}
                   </div>
                 </DialogContent>
               </Dialog>
@@ -152,6 +188,7 @@ const Index = () => {
             </Button>
             <Button
               className="h-32 flex flex-col gap-2 bg-secondary hover:bg-secondary/90"
+              onClick={handleTravelAssistant}
             >
               <MessageSquare className="h-8 w-8" />
               <span>Travel Assistant</span>
@@ -163,6 +200,13 @@ const Index = () => {
               <span>Navigation</span>
             </Button>
           </div>
+
+          {aiAnalysis && (
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <h3 className="text-lg font-semibold mb-4">AI Travel Insights</h3>
+              <pre className="whitespace-pre-wrap text-sm">{aiAnalysis}</pre>
+            </div>
+          )}
 
           <WaterSafety country={currentCountry} />
         </main>
