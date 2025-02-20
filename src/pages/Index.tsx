@@ -106,7 +106,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-muted">
+    <div className="min-h-screen flex flex-col bg-[#F1F0FB]">
       <Header />
       
       {showCamera ? (
@@ -118,27 +118,27 @@ const Index = () => {
         <main className="flex-grow container py-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-primary">Welcome to XMRT Traveler</h2>
-              <p className="text-sm text-gray-600">Your AI Travel Companion</p>
+              <h2 className="text-2xl font-bold text-[#6E59A5]">Travel XMRT</h2>
+              <p className="text-sm text-[#8E9196]">Your AI Travel Companion</p>
             </div>
             <div className="flex gap-2">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline" className="gap-2">
+                  <Button variant="outline" className="gap-2 hover:bg-[#E5DEFF]">
                     <Upload className="h-4 w-4" />
                     Import Itinerary
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-4xl">
+                <DialogContent className="max-w-4xl bg-white">
                   <DialogHeader>
-                    <DialogTitle>Import Travel Itinerary</DialogTitle>
-                    <DialogDescription>
+                    <DialogTitle className="text-[#1A1F2C]">Import Travel Itinerary</DialogTitle>
+                    <DialogDescription className="text-[#8A898C]">
                       Upload your TripIt or other travel itinerary file to get personalized AI suggestions.
                     </DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
                     <div className="grid gap-2">
-                      <label htmlFor="itinerary" className="text-sm font-medium">
+                      <label htmlFor="itinerary" className="text-sm font-medium text-[#1A1F2C]">
                         Choose File
                       </label>
                       <input
@@ -146,22 +146,22 @@ const Index = () => {
                         type="file"
                         accept=".csv,.json,.txt"
                         onChange={handleFileUpload}
-                        className="cursor-pointer rounded-lg border border-gray-200 px-3 py-2 text-sm"
+                        className="cursor-pointer rounded-lg border border-[#C8C8C9] px-3 py-2 text-sm"
                         disabled={isAnalyzing}
                       />
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-[#8A898C]">
                       Supported formats: CSV, JSON, TXT
                     </p>
                     {isAnalyzing && (
-                      <p className="text-sm text-muted-foreground animate-pulse">
+                      <p className="text-sm text-[#8A898C] animate-pulse">
                         Analyzing your itinerary...
                       </p>
                     )}
                     {aiAnalysis && (
-                      <div className="mt-4 p-4 bg-muted rounded-lg">
-                        <h3 className="font-medium mb-2">AI Analysis & Suggestions</h3>
-                        <pre className="whitespace-pre-wrap text-sm">{aiAnalysis}</pre>
+                      <div className="mt-4 p-4 bg-[#F1F0FB] rounded-lg">
+                        <h3 className="font-medium mb-2 text-[#1A1F2C]">AI Analysis & Suggestions</h3>
+                        <pre className="whitespace-pre-wrap text-sm text-[#221F26]">{aiAnalysis}</pre>
                       </div>
                     )}
                   </div>
@@ -169,7 +169,7 @@ const Index = () => {
               </Dialog>
               <Button
                 variant="outline"
-                className="gap-2"
+                className="gap-2 hover:bg-[#E5DEFF]"
                 onClick={detectLocation}
               >
                 <Globe className="h-4 w-4" />
@@ -180,21 +180,21 @@ const Index = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Button
-              className="h-32 flex flex-col gap-2 bg-primary hover:bg-primary/90"
+              className="h-32 flex flex-col gap-2 bg-[#9b87f5] hover:bg-[#7E69AB] text-white"
               onClick={() => setShowCamera(true)}
             >
               <Camera className="h-8 w-8" />
               <span>Scan & Translate</span>
             </Button>
             <Button
-              className="h-32 flex flex-col gap-2 bg-secondary hover:bg-secondary/90"
+              className="h-32 flex flex-col gap-2 bg-[#8B5CF6] hover:bg-[#7E69AB] text-white"
               onClick={handleTravelAssistant}
             >
               <MessageSquare className="h-8 w-8" />
               <span>Travel Assistant</span>
             </Button>
             <Button
-              className="h-32 flex flex-col gap-2 bg-accent hover:bg-accent/90"
+              className="h-32 flex flex-col gap-2 bg-[#1EAEDB] hover:bg-[#33C3F0] text-white"
             >
               <Map className="h-8 w-8" />
               <span>Navigation</span>
@@ -203,8 +203,8 @@ const Index = () => {
 
           {aiAnalysis && (
             <div className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">AI Travel Insights</h3>
-              <pre className="whitespace-pre-wrap text-sm">{aiAnalysis}</pre>
+              <h3 className="text-lg font-semibold mb-4 text-[#1A1F2C]">AI Travel Insights</h3>
+              <pre className="whitespace-pre-wrap text-sm text-[#221F26]">{aiAnalysis}</pre>
             </div>
           )}
 

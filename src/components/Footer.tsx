@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,11 +26,11 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-primary text-primary-foreground py-8 mt-auto">
+    <footer className="bg-[#9b87f5] text-white py-8 mt-auto">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <h3 className="text-lg font-semibold mb-4">XMRT Traveler</h3>
+            <h3 className="text-lg font-semibold mb-4">Travel XMRT</h3>
             <p className="text-sm opacity-80">
               Your AI-powered travel companion for seamless navigation and translation.
             </p>
@@ -42,7 +43,7 @@ const Footer = () => {
                 placeholder="xmrtsolutions@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-white text-primary"
+                className="bg-white text-[#1A1F2C]"
               />
               <Button type="submit" variant="secondary">
                 Subscribe
@@ -50,9 +51,9 @@ const Footer = () => {
             </form>
           </div>
         </div>
-        <div className="mt-8 pt-8 border-t border-primary-foreground/10">
+        <div className="mt-8 pt-8 border-t border-white/10">
           <p className="text-center text-sm opacity-60">
-            © {new Date().getFullYear()} XMRT Traveler. All rights reserved.
+            © {new Date().getFullYear()} Travel XMRT. All rights reserved.
           </p>
         </div>
       </div>
