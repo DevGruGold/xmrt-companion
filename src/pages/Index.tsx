@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Camera, MessageSquare, Map, Globe, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -23,6 +22,7 @@ const Index = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [aiAnalysis, setAiAnalysis] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [chatInput, setChatInput] = useState("");
   const { toast } = useToast();
 
   const detectLocation = async () => {
@@ -133,26 +133,69 @@ const Index = () => {
                   <DialogHeader>
                     <DialogTitle className="text-[#1A1F2C]">Import Travel Itinerary</DialogTitle>
                     <DialogDescription className="text-[#8A898C]">
-                      Upload your TripIt or other travel itinerary file to get personalized AI suggestions.
+                      Upload your travel itinerary file or paste your travel plans directly.
                     </DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
-                    <div className="grid gap-2">
-                      <label htmlFor="itinerary" className="text-sm font-medium text-[#1A1F2C]">
-                        Choose File
-                      </label>
-                      <input
-                        id="itinerary"
-                        type="file"
-                        accept=".csv,.json,.txt"
-                        onChange={handleFileUpload}
-                        className="cursor-pointer rounded-lg border border-[#C8C8C9] px-3 py-2 text-sm"
-                        disabled={isAnalyzing}
-                      />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label htmlFor="itinerary" className="text-sm font-medium text-[#1A1F2C]">
+                          Upload File
+                        </label>
+                        <input
+                          id="itinerary"
+                          type="file"
+                          accept=".csv,.json,.txt"
+                          onChange={handleFileUpload}
+                          className="cursor-pointer rounded-lg border border-[#C8C8C9] px-3 py-2 text-sm"
+                          disabled={isAnalyzing}
+                        />
+                        <p className="text-xs text-[#8A898C]">
+                          Supported formats: CSV, JSON, TXT
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor="chatInput" className="text-sm font-medium text-[#1A1F2C] flex items-center gap-2">
+                          <MessageSquare className="h-4 w-4" />
+                          Paste Travel Plans
+                        </label>
+                        <textarea
+                          id="chatInput"
+                          value={chatInput}
+                          onChange={(e) => setChatInput(e.target.value)}
+                          placeholder="Paste your travel plans or itinerary here..."
+                          className="w-full h-32 rounded-lg border border-[#C8C8C9] px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#9b87f5]"
+                        />
+                        <Button 
+                          onClick={async () => {
+                            if (!chatInput.trim()) return;
+                            setIsAnalyzing(true);
+                            try {
+                              const analysis = await analyzeItinerary(chatInput);
+                              setAiAnalysis(analysis);
+                              toast({
+                                title: "Itinerary Analyzed",
+                                description: "Your travel plans have been analyzed by AI. Check the suggestions below.",
+                              });
+                            } catch (error) {
+                              console.error('Analysis error:', error);
+                              toast({
+                                title: "Analysis Error",
+                                description: "Failed to analyze travel plans. Please try again.",
+                                variant: "destructive",
+                              });
+                            } finally {
+                              setIsAnalyzing(false);
+                            }
+                          }}
+                          disabled={isAnalyzing || !chatInput.trim()}
+                          className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] text-white"
+                        >
+                          Analyze Plans
+                        </Button>
+                      </div>
                     </div>
-                    <p className="text-xs text-[#8A898C]">
-                      Supported formats: CSV, JSON, TXT
-                    </p>
+                    
                     {isAnalyzing && (
                       <p className="text-sm text-[#8A898C] animate-pulse">
                         Analyzing your itinerary...
