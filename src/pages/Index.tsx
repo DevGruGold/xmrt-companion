@@ -7,6 +7,7 @@ import CameraView from '@/components/CameraView';
 import WaterSafety from '@/components/WaterSafety';
 import { useToast } from '@/hooks/use-toast';
 import { analyzeItinerary, generateTravelPlan, TravelSuggestions } from '@/services/travelPlannerService';
+import { translateText } from '@/services/translationService';
 import {
   Dialog,
   DialogContent,
@@ -101,13 +102,38 @@ const Index = () => {
     }
   };
 
+  const handleLanguageChange = async (language: string) => {
+    setSelectedLanguage(language);
+    if (aiAnalysis && language !== "en") {
+      setIsAnalyzing(true);
+      try {
+        const translatedAnalysis = await translateText(aiAnalysis, language);
+        if (translatedAnalysis) {
+          setAiAnalysis(translatedAnalysis);
+        }
+      } catch (error) {
+        console.error('Translation error:', error);
+        toast({
+          title: "Translation Error",
+          description: "Failed to translate content. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsAnalyzing(false);
+      }
+    }
+  };
+
   useEffect(() => {
     detectLocation();
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F1F0FB]">
-      <Header />
+      <Header 
+        selectedLanguage={selectedLanguage}
+        onLanguageChange={handleLanguageChange}
+      />
       
       {showCamera ? (
         <CameraView 
