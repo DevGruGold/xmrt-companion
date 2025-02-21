@@ -142,6 +142,8 @@ const Index = () => {
         />
       ) : (
         <main className="flex-grow container py-6 space-y-6">
+          <WaterSafety country={currentCountry} />
+
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-[#6E59A5]">Travel XMRT</h2>
@@ -276,8 +278,6 @@ const Index = () => {
               <pre className="whitespace-pre-wrap text-sm text-[#221F26]">{aiAnalysis}</pre>
             </div>
           )}
-
-          <WaterSafety country={currentCountry} />
         </main>
       )}
       
