@@ -11,6 +11,30 @@ export interface TravelSuggestions {
   transportationTips: string[];
 }
 
+export interface WaterSafetyInfo {
+  safe: boolean;
+  tips: string[];
+  description: string;
+}
+
+export async function getWaterSafetyInfo(country: string): Promise<WaterSafetyInfo> {
+  const prompt = `As a travel expert, provide information about water safety in ${country}. Include whether tap water is generally safe to drink and specific tips for water safety. Format your response as JSON with these keys: safe (boolean), tips (array of strings), description (string explaining the general water situation). Be specific and accurate about the current water safety situation in ${country}.`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const safetyInfo = JSON.parse(response.text());
+    return safetyInfo as WaterSafetyInfo;
+  } catch (error) {
+    console.error('Error getting water safety info:', error);
+    return {
+      safe: false,
+      tips: ["Use bottled water", "Avoid tap water", "Be cautious with ice"],
+      description: "Water safety information is currently unavailable. Please exercise caution."
+    };
+  }
+}
+
 export async function analyzeItinerary(itineraryText: string): Promise<string> {
   const prompt = `As a travel expert, analyze this travel itinerary and provide suggestions for improvement, considering timing, logistics, and local attractions. Format your response in a clear, concise way:
 
