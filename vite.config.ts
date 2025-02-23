@@ -21,6 +21,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   define: {
+    // Map GEMINI_API_KEY to VITE_GEMINI_API_KEY for client-side use
     'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY),
   },
 }));
