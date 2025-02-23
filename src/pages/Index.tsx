@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Camera, MessageSquare, Map, Globe, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -287,3 +288,4 @@ const Index = () => {
 };
 
 export default Index;
+
